@@ -395,10 +395,31 @@ const buildCSS = () => {
         }
     }    
     `;
+
+    if(document.getElementById('umitcan-carousel-style')) return;
+
     const styleSheet = document.createElement("style");
+    styleSheet.id = 'umitcan-carousel-style';
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
 };
+
+const findTargetElement = () => {
+    const parentCarousel = document.querySelector('eb-product-carousel');
+
+    if(!parentCarousel) {
+        console.error('Parent carousel bulunamadı.');
+        return null;
+    }
+
+    const insWrapper = parentCarousel.querySelector('[class*="ins-preview-wrapper"]');
+
+    if (!insWrapper) {
+        console.error('Target element bulunamadı.');
+        return null;
+    }
+    return insWrapper;
+}
 
 
 const init = async () => {
@@ -410,15 +431,18 @@ const init = async () => {
     }
 
     await fetchProducts();
+
+
+    const target = findTargetElement();
+
     
-    
-    const target = document.querySelector('.ins-preview-wrapper.ins-preview-wrapper-28406');
-    
-    buildCSS();
     if (!target) {
       console.error('Target element bulunamadı.');
       return;
     }
+
+    buildCSS();
+
     target.insertAdjacentHTML('afterend', buildCarousel());
     
     setTimeout(() => {
